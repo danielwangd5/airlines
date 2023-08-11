@@ -5,7 +5,8 @@ ThisBuild / scalaVersion := "2.12.10"
 lazy val root = (project in file("."))
   .settings(
     name := "airlines",
-    idePackagePrefix := Some("com.quantexa.codeasessment")
+    idePackagePrefix := Some("com.quantexa.codeasessment"),
+    libraryDependencies ++= Seq( "org.apache.spark" %% "spark-core" % "2.4.8", "org.apache.spark" %% "spark-sql" % "2.4.8" )
   )
 
-libraryDependencies ++= Seq( "org.apache.spark" %% "spark-core" % "2.4.8", "org.apache.spark" %% "spark-sql" % "2.4.8" )
+
