@@ -115,7 +115,7 @@ object SharedUtils {
     val passengersWithMoreThan3FlightsTogether = passengerPairsWithFlightCounts.collect {
       case ((passenger1Id, passenger2Id), count) if count > 3 =>
         (passenger1Id, passenger2Id, count)
-    }.toList
+    }.toList.sortBy { case (_, _, count) => count }.reverse
 
     passengersWithMoreThan3FlightsTogether
   }
