@@ -89,7 +89,7 @@ object SharedUtils {
         }
         consecutiveCountries._1
       }
-      .toList
+      .toList.sortBy { case (_, count) => count }.reverse
 
     longestRunPerPassenger
   }
