@@ -119,28 +119,28 @@ object SharedUtils {
    *         visited without being in the UK.
    */
   def processQuestion3(flightData: List[Flight]): List[(Int, Int)] = {
-    val nonUKFlights = flightData.filter(_.from != "uk")
+    val flightsPerPassenger = flightData.groupBy(_.passengerId)
 
-    // Group flights by passengerId and consecutive countries visited
-    val longestRunPerPassenger = nonUKFlights
-      .groupBy(_.passengerId)
-      .mapValues { flights =>
-        val consecutiveCountries = flights.foldLeft((0, 0, 0)) { case ((maxRun, currentRun, prevCountryIdx), flight) =>
-          if (flight.to != "uk") {
-            // Extend the current run
-            val newCurrentRun = currentRun + 1
-            (Math.max(maxRun, newCurrentRun), newCurrentRun, prevCountryIdx)
-          } else {
-            // Reset the current run
-            (maxRun, 0, prevCountryIdx + currentRun + 1)
-          }
+    val longestRunPerPassenger = flightsPerPassenger.map { case (passengerId, flights) =>
+      val nonUKFlights = flights.filterNot(_.from == "uk").sortBy(_.date)
+
+      val longestRun = nonUKFlights.foldLeft((0, Set.empty[String])) { case ((maxRun, countries), flight) =>
+        val newCountries = countries + flight.to
+        val currentRun = if (newCountries.size > countries.size) {
+          newCountries.size
+        } else {
+          0
         }
-        consecutiveCountries._1
-      }
-      .toList.sortBy { case (_, count) => count }.reverse
+        (Math.max(maxRun, currentRun), newCountries)
+      }._1
+
+      (passengerId, longestRun)
+    }.toList.sortBy { case (_, longestRun) => longestRun }
+      .reverse
 
     longestRunPerPassenger
   }
+
 
   /**
    * Processes flight data to find passengers who have been on more than 3 flights together.
