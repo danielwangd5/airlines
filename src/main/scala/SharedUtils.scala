@@ -154,11 +154,11 @@ object SharedUtils {
    *         and the number of flights taken together (more than 3).
    */
   def processQuestion4(flightData: List[Flight]): List[(Int, Int, Int)] = {
-    // Group flights by flightId
-    val flightsPerFlightId = flightData.groupBy(_.flightId)
+    // Group flights by flightId and date
+    val flightsPerFlightIdAndDate = flightData.groupBy(flight => (flight.flightId, flight.date))
 
     // Filter flights with more than one passenger
-    val flightsWithMultiplePassengers = flightsPerFlightId.filter(_._2.size > 1).values
+    val flightsWithMultiplePassengers = flightsPerFlightIdAndDate.filter(_._2.size > 1).values
 
     // Extract pairs of passenger IDs from flights with multiple passengers
     val passengerPairsWithFlightsTogether = flightsWithMultiplePassengers.flatMap { flights =>
@@ -178,5 +178,6 @@ object SharedUtils {
 
     passengersWithMoreThan3FlightsTogether
   }
+
 
 }
