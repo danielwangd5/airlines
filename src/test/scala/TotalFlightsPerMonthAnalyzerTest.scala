@@ -20,7 +20,7 @@ class TotalFlightsPerMonthAnalyzerTest extends AnyFlatSpec with Matchers {
   )
 
   // Tests for the processQuestion1 function
-  "totalFlightsPerMonth" should "return the total number of flights for each month" in {
+  "processQuestion1" should "return the total number of flights for each month" in {
     val result = processQuestion1(sampleFlights)
 
     // Expected results based on the sample flights
