@@ -6,10 +6,19 @@ object SharedUtils {
   case class Flight(passengerId: Int, flightId: Int, from: String, to: String, date: String)
   case class Passenger(passengerId: Int, firstName: String, lastName: String)
 
-  // Load flight data
-  def loadFlightData (filePath: String): List[Flight]
-  =
-  {
+  /**
+   * Loads flight data from a CSV file and returns a list of Flight objects.
+   *
+   * This method reads flight data from a CSV file located at the specified filePath.
+   * The CSV file is expected to have the following format:
+   * passengerId, flightId, from, to, date
+   *
+   * @param filePath The path to the CSV file containing flight data.
+   * @return A list of Flight objects representing the loaded flight data.
+   * @throws FileNotFoundException if the specified file path is invalid.
+   * @throws IOException           if there's an issue reading the CSV file.
+   */
+  def loadFlightData (filePath: String): List[Flight] = {
     val source = Source.fromFile(filePath)
     val flightData = try {
       source.getLines().drop(1).map(_parseFlight).toList
@@ -19,13 +28,25 @@ object SharedUtils {
     flightData
   }
 
+  // Internal method to parse flight information into Flight object
   private def _parseFlight(line: String): Flight = {
     val fields = line.split(",")
     Flight(fields(0).toInt, fields(1).toInt, fields(2), fields(3), fields(4))
   }
 
 
-  // Load passenger data
+  /**
+   * Loads passenger data from a CSV file and returns a map of passenger IDs to Passenger objects.
+   *
+   * This method reads passenger data from a CSV file located at the specified filePath.
+   * The CSV file is expected to have the following format:
+   * passengerId, firstName, lastName
+   *
+   * @param filePath The path to the CSV file containing passenger data.
+   * @return A map where keys are passenger IDs and values are corresponding Passenger objects.
+   * @throws FileNotFoundException if the specified file path is invalid.
+   * @throws IOException           if there's an issue reading the CSV file.
+   */
   def loadPassengerData(filePath: String): Map[Int, Passenger] = {
     val source = Source.fromFile(filePath)
     val passengerData = try {
@@ -42,6 +63,12 @@ object SharedUtils {
   }
 
 
+  /**
+   * Find the total number of flights for each month.
+   *
+   * @param flightData The flight data to analyze.
+   * @return A map of month-year to the number of flights in that month.
+   */
   def processQuestion1(flightData: List[Flight]): Map[String, Int] = {
     val flightsWithYearMonth = flightData.map(flight => {
       val yearMonth = flight.date.substring(0, 7)
@@ -54,6 +81,17 @@ object SharedUtils {
     flightsPerMonth
   }
 
+  /**
+   * Processes flight and passenger data to find the names of the 100 most frequent flyers.
+   *
+   * This method takes flight data and passenger data as inputs and calculates the 100 most frequent flyers.
+   * It returns a list of tuples, where each tuple contains passenger information and the number of flights.
+   *
+   * @param flightData    A list of Flight objects representing flight data.
+   * @param passengerData A map of passenger IDs to Passenger objects representing passenger data.
+   * @return A list of tuples where each tuple contains passenger IDs, number of flights,
+   *         first names, and last names of the 100 most frequent flyers.
+   */
   def processQuestion2(flightData: List[Flight], passengerData: Map[Int, Passenger]): List[(Int, Int, String, String)] = {
     // Calculate the number of flights per passenger
     val flightsPerPassenger = flightData.groupBy(_.passengerId).mapValues(_.size)
@@ -70,6 +108,16 @@ object SharedUtils {
     topFrequentFlyers.toList
   }
 
+  /**
+   * Processes flight data to find the greatest number of countries visited by a passenger without being in the UK.
+   *
+   * This method takes flight data as input and calculates the greatest number of countries a passenger has visited
+   * consecutively without being in the UK. It returns a list of tuples containing passenger IDs and the longest run.
+   *
+   * @param flightData A list of Flight objects representing flight data.
+   * @return A list of tuples where each tuple contains passenger IDs and the greatest number of consecutive countries
+   *         visited without being in the UK.
+   */
   def processQuestion3(flightData: List[Flight]): List[(Int, Int)] = {
     val nonUKFlights = flightData.filter(_.from != "uk")
 
@@ -94,6 +142,17 @@ object SharedUtils {
     longestRunPerPassenger
   }
 
+  /**
+   * Processes flight data to find passengers who have been on more than 3 flights together.
+   *
+   * This method takes flight data as input and identifies pairs of passengers who have been on the same flights
+   * together more than 3 times. It returns a list of tuples containing passenger IDs, the IDs of the other passengers,
+   * and the number of flights they have taken together.
+   *
+   * @param flightData A list of Flight objects representing flight data.
+   * @return A list of tuples where each tuple contains passenger IDs, the IDs of other passengers,
+   *         and the number of flights taken together (more than 3).
+   */
   def processQuestion4(flightData: List[Flight]): List[(Int, Int, Int)] = {
     // Group flights by flightId
     val flightsPerFlightId = flightData.groupBy(_.flightId)
