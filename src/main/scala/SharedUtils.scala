@@ -69,15 +69,18 @@ object SharedUtils {
    * @param flightData The flight data to analyze.
    * @return A map of month-year to the number of flights in that month.
    */
-  def processQuestion1(flightData: List[Flight]): Map[String, Int] = {
+  def processQuestion1(flightData: List[Flight]): List[(String, Int)] = {
     val flightsWithYearMonth = flightData.map(flight => {
-      val yearMonth = flight.date.substring(0, 7)
-      (yearMonth, 1)
+      val month = flight.date.substring(5, 7)
+      (month, 1)
     })
 
     val flightsPerMonth = flightsWithYearMonth
       .groupBy(_._1)
       .mapValues(_.size)
+      .toList
+      .sortBy { case (month, _) => month }
+
     flightsPerMonth
   }
 

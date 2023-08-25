@@ -18,13 +18,13 @@ object TotalFlightsPerMonthAnalyzer {
   }
 
 
-  def writeResults(resultMap: Map[String, Int], outputPath: String): Unit = {
+  def writeResults(resultMap: List[(String, Int)], outputPath: String): Unit = {
     val writer = new PrintWriter(outputPath)
     try {
       // Write the header
-      writer.println("yearMonth,numFlights")
-      resultMap.foreach { case (yearMonth, count) =>
-        writer.println(s"$yearMonth,$count")
+      writer.println("month,numFlights")
+      resultMap.foreach { case (month, count) =>
+        writer.println(s"$month,$count")
       }
     } finally {
       writer.close()

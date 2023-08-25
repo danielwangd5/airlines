@@ -24,11 +24,12 @@ class TotalFlightsPerMonthAnalyzerTest extends AnyFlatSpec with Matchers {
     val result = processQuestion1(sampleFlights)
 
     // Expected results based on the sample flights
-    val expectedResults = Map(
-      "2022-08" -> 3, // 3 flights in August, 2022
-      "2022-09" -> 2, // 2 flights in September, 2022
-      "2022-10" -> 2,  // 2 flights in October, 2022
-      "2023-01" -> 2  //2 flights in January, 2023
+    val expectedResults = List(
+      ("01", 2),  //2 flights in January, 2023
+      ("08", 3), // 3 flights in August, 2022
+      ("09", 2), // 2 flights in September, 2022
+      ("10", 2)  // 2 flights in October, 2022
+
     )
 
     result should contain theSameElementsAs expectedResults
