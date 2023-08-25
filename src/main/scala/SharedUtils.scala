@@ -183,4 +183,74 @@ object SharedUtils {
   }
 
 
+  /**
+   * Calculates the longest run of consecutive countries a passenger has been in without being in the UK.
+   *
+   * @param flights A List of Flight objects representing a passenger's flights (ordered by dates).
+   * @return The length of the longest run of consecutive countries without being in the UK.
+   */
+  def calculateLongestRun(flights: List[Flight]): Int = {
+    if (flights.isEmpty) {
+      0
+    } else {
+      var maxRun = 0
+      var currentRun = 0
+      var prevCountry = flights.head.to
+      if (flights.head.from == "uk") {
+        if (flights.head.to != "uk") {
+          currentRun = 1
+          maxRun = 1
+        }
+      } else {
+        if (flights.head.to == "uk") {
+          maxRun = 1
+        } else {
+          currentRun = 2
+          maxRun = 2
+        }
+      }
+
+      for (i <- 1 until flights.length) {
+        if (flights(i).to != "uk" && flights(i).from == prevCountry) {
+          currentRun += 1
+          maxRun = Math.max(maxRun, currentRun)
+        } else {
+          currentRun = 0
+        }
+        prevCountry = flights(i).to
+      }
+
+      maxRun
+    }
+  }
+
+
+  /**
+   * Filters and orders flights for a given passenger. Auxiliary function to facilitate unit testing
+   *
+   * @param passengerId The passenger ID to filter by.
+   * @return A list of flights filtered and ordered by date for the given passenger.
+   */
+  def filterAndOrderFlights(passengerId: Int): List[Flight] = {
+    val flightData = loadFlightData("data/flightData.csv")
+    val filteredFlights = flightData.filter(_.passengerId == passengerId)
+    val orderedFlights = filteredFlights.sortBy(_.date)
+
+    orderedFlights
+  }
+
+  /**
+   * Prints a formatted table of flights.
+   *
+   * @param flights The list of flights to print.
+   */
+  def printFlights(flights: List[Flight]) = {
+    println("PassengerID | FlightID | From | To | Date")
+    println("-----------------------------------------")
+    flights.foreach { flight =>
+      println(f"${flight.passengerId}%11d | ${flight.flightId}%8d | ${flight.from}%4s | ${flight.to}%2s | ${flight.date}")
+    }
+    println(flights.size)
+  }
+
 }
