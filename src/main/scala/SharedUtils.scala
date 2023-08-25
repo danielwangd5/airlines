@@ -72,12 +72,12 @@ object SharedUtils {
   def processQuestion1(flightData: List[Flight]): List[(String, Int)] = {
     val flightsWithYearMonth = flightData.map(flight => {
       val month = flight.date.substring(5, 7)
-      (month, 1)
+      (flight.flightId, month)
     })
 
     val flightsPerMonth = flightsWithYearMonth
-      .groupBy(_._1)
-      .mapValues(_.size)
+      .groupBy(_._2)
+      .mapValues(_.map(_._1).distinct.size)
       .toList
       .sortBy { case (month, _) => month }
 
